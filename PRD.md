@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> ac5e259d7df35b9dc5a1dc7cd1261907c9201441
 ## Project Overview
 This is a mobile-first web application for AI-aggregated recipes, focused on optimizing the cooking experience. The platform emphasizes accessibility during active cooking sessions and SEO-friendly content.
 
@@ -30,4 +33,8 @@ This is a mobile-first web application for AI-aggregated recipes, focused on opt
 - Recipe generator - Users enter what they want to eat, almost as a search input, and we build a recipe specifically for them. 
 - Recipe directory - a list of recipes that are SEO optimized on the website
 - Cook mode - the easiest, no nonesense cooking experience ever designed for web
+<<<<<<< HEAD
 - A video for each recipe (LLM optimized)
+=======
+- A video for each recipe (LLM optimized)
+>>>>>>> ac5e259d7df35b9dc5a1dc7cd1261907c9201441
