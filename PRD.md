@@ -7,7 +7,6 @@ This is a mobile-first web application for AI-aggregated recipes, focused on opt
 
 ## Tech Stack and Documentation
 - Next.JS @https://nextjs.org/docs
-- Shadcn @https://ui.shadcn.com/docs/installation
 - Font Awesome Icons @https://docs.fontawesome.com/
 - Tailwind CSS @https://tailwindcss.com/docs/installation/using-vite
 - Silk @https://silkhq.notion.site/Silk-Components-fad7232e08a24cf6bf9008749cc09879
