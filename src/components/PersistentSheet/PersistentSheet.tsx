@@ -100,7 +100,13 @@ const PersistentSheet = ({
           <Sheet.Content className="PersistentSheet-content">
             <div className="PersistentSheet-actualContent">
               {/* Mini player at bottom detent */}
-              <div className="PersistentSheet-retractedContentContainer">
+              <div 
+                className="PersistentSheet-retractedContentContainer cursor-pointer" 
+                onClick={handleExpand}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleExpand()}
+              >
                 <div className="ExamplePersistentSheet-retractedRoot">
                   <Image 
                     src={albumCover}
@@ -111,7 +117,10 @@ const PersistentSheet = ({
                   />
                   <div className="ExamplePersistentSheet-retractedTextContent">
                     <div className="ExamplePersistentSheet-retractedTitle">{title}</div>
-                    <div className="ExamplePersistentSheet-retractedSubtitle">{artist}</div>
+                    <div className="ExamplePersistentSheet-retractedSubtitle">
+                      {artist}
+                      <span className="ml-2 text-xs text-gray-400">(Tap to expand)</span>
+                    </div>
                   </div>
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
@@ -123,19 +132,6 @@ const PersistentSheet = ({
                   </svg>
                 </div>
               </div>
-              
-              {/* Expand button - only visible in first detent */}
-              {activeDetent === 0 && (
-                <div 
-                  className="PersistentSheet-expandTrigger cursor-pointer"
-                  onClick={handleExpand}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && handleExpand()}
-                >
-                  Expand
-                </div>
-              )}
               
               {/* Full content - visible in second detent */}
               {fullContent && activeDetent === 1 && (
