@@ -1,0 +1,12 @@
+.ingredient {
+  background-color: #EBF4FF;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #3182CE;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.instruction-text {
+  line-height: 1.7;
+} 

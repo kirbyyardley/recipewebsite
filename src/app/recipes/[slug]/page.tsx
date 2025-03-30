@@ -2,7 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata, ResolvingMetadata } from 'next';
-import { getRecipeBySlug } from '@/services/recipes';
+import { getRecipeBySlug, RecipeWithIngredients } from '@/services/recipes';
+import './recipe-page.css'; // Import the CSS file
 
 type Props = {
   params: { slug: string };
@@ -55,12 +56,8 @@ export default async function RecipePage({ params }: Props) {
     return difficultyMap[level] || 'Unknown';
   };
 
-  // Parse JSON instructions if they exist
-  const instructions = recipe.instructions ? 
-    (typeof recipe.instructions === 'string' ? 
-      JSON.parse(recipe.instructions) : 
-      recipe.instructions) : 
-    [];
+  // Get the processed instructions
+  const instructions = recipe.processed_instructions || [];
 
   return (
     <div className="min-h-screen px-4 py-8 max-w-6xl mx-auto">
@@ -103,6 +100,28 @@ export default async function RecipePage({ params }: Props) {
               <div className="font-semibold">{getDifficultyText(recipe.difficulty)}</div>
             </div>
           </div>
+
+          {/* Ingredients Section */}
+          <div className="mt-6">
+            <h2 className="text-xl font-bold mb-4">Ingredients</h2>
+            <ul className="space-y-2">
+              {recipe.recipe_ingredients?.map((item) => (
+                <li key={item.id} className="flex items-start">
+                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                    {item.optional ? "?" : "✓"}
+                  </span>
+                  <div>
+                    <span className="font-medium">
+                      {item.metric_amount}{item.metric_unit} {item.ingredient?.name}
+                    </span>
+                    {item.notes && (
+                      <span className="text-gray-500 text-sm ml-2">({item.notes})</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -110,15 +129,21 @@ export default async function RecipePage({ params }: Props) {
         <h2 className="text-2xl font-bold mb-6">Instructions</h2>
         {instructions.length > 0 ? (
           <ol className="space-y-6">
-            {instructions.map((instruction: any, index: number) => (
+            {instructions.map((instruction, index) => (
               <li key={index} className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="flex items-start">
                   <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 flex-shrink-0">
-                    {index + 1}
+                    {instruction.step || index + 1}
                   </div>
                   <div>
-                    <p className="font-medium text-lg mb-2">{instruction.title || `Step ${index + 1}`}</p>
-                    <p className="text-gray-700">{instruction.description}</p>
+                    {instruction.processed_description ? (
+                      <div 
+                        className="text-gray-700 instruction-text"
+                        dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
+                      />
+                    ) : (
+                      <p className="text-gray-700">{instruction.description}</p>
+                    )}
                   </div>
                 </div>
               </li>
