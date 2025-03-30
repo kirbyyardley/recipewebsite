@@ -1,6 +1,7 @@
 'use client';
 
 import { BottomSheet } from '@/components/BottomSheet';
+// import { TopSheet } from '@/components/TopSheet'; // Removed
 
 export default function SilkTestPage() {
   return (
@@ -10,7 +11,10 @@ export default function SilkTestPage() {
         <p className="text-gray-600">
           Click the button below to test the BottomSheet component:
         </p>
-        <BottomSheet />
+        <div className="space-x-4">
+          <BottomSheet />
+          {/* <TopSheet /> Removed */}
+        </div>
       </div>
     </main>
   );
