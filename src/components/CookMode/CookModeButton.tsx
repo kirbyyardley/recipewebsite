@@ -13,6 +13,15 @@ interface CookModeButtonProps {
 export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Event handlers
+  const handleOpen = () => {
+    setIsOpen(true);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
+
   // Content for the PageFromBottom component
   const cookModeContent = (
     <div className="cook-mode-content">
@@ -47,7 +56,7 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
       {!isOpen && (
         <button 
           className="cook-mode-fab"
-          onClick={() => setIsOpen(true)}
+          onClick={handleOpen}
           aria-label="Start cooking"
         >
           <span className="cook-mode-fab-icon">👨‍🍳</span>
@@ -57,7 +66,7 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
 
       <PageFromBottom
         isOpen={isOpen}
-        onOpenChange={(open) => setIsOpen(open)}
+        onOpenChange={handleOpenChange}
         sheetContent={cookModeContent}
       />
     </>

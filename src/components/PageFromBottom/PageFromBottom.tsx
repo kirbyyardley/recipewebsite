@@ -8,6 +8,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   sheetContent: React.ReactNode;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onDismiss?: () => void;
+  onPresent?: () => void;
 }
 
 const PageFromBottom = ({ 
@@ -15,6 +17,8 @@ const PageFromBottom = ({
   sheetContent, 
   isOpen: controlledIsOpen, 
   onOpenChange,
+  onDismiss,
+  onPresent,
   ...restProps 
 }: Props) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
@@ -40,10 +44,27 @@ const PageFromBottom = ({
     }
   };
 
+  // Handle dismiss event
+  const handleDismiss = () => {
+    handleOpenChange(false);
+    if (onDismiss) {
+      onDismiss();
+    }
+  };
+
+  // Handle present event
+  const handlePresent = () => {
+    handleOpenChange(true);
+    if (onPresent) {
+      onPresent();
+    }
+  };
+
   return (
     <Sheet.Root 
       open={isOpen}
-      onOpenChange={handleOpenChange}
+      onDismiss={handleDismiss}
+      onPresent={handlePresent}
       license="commercial" 
       {...restProps}
     >
