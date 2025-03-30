@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata, ResolvingMetadata } from 'next';
 import { getRecipeBySlug, RecipeWithIngredients } from '@/services/recipes';
+import CookModeWrapper from '@/components/CookMode/CookModeWrapper';
 import './recipe-page.css'; // Import the CSS file
 
 type Props = {
@@ -153,6 +154,12 @@ export default async function RecipePage({ params }: Props) {
           <p className="text-gray-500">No instructions available for this recipe.</p>
         )}
       </div>
+
+      {/* Cook Mode Button - Client Component */}
+      <CookModeWrapper 
+        instructions={instructions} 
+        recipeTitle={recipe.title} 
+      />
     </div>
   );
 } 

@@ -1,33 +1,75 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Sheet } from "@silk-hq/components";
 import "./PageFromBottom.css";
 
-const PageFromBottom = () => (
-   <Sheet.Root license="commercial">
-      <Sheet.Trigger className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">page from bottom</Sheet.Trigger>
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  presentTrigger?: React.ReactNode;
+  sheetContent: React.ReactNode;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+const PageFromBottom = ({ 
+  presentTrigger, 
+  sheetContent, 
+  isOpen: controlledIsOpen, 
+  onOpenChange,
+  ...restProps 
+}: Props) => {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
+  
+  // Determine if we're in controlled or uncontrolled mode
+  const isControlled = controlledIsOpen !== undefined;
+  const isOpen = isControlled ? controlledIsOpen : internalIsOpen;
+  
+  // Handle external open state changes
+  useEffect(() => {
+    if (isControlled && controlledIsOpen !== internalIsOpen) {
+      setInternalIsOpen(controlledIsOpen);
+    }
+  }, [controlledIsOpen, isControlled, internalIsOpen]);
+  
+  // Handle state changes
+  const handleOpenChange = (open: boolean) => {
+    if (!isControlled) {
+      setInternalIsOpen(open);
+    }
+    if (onOpenChange) {
+      onOpenChange(open);
+    }
+  };
+
+  return (
+    <Sheet.Root 
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      license="commercial" 
+      {...restProps}
+    >
+      {presentTrigger && (
+        <Sheet.Trigger>{presentTrigger}</Sheet.Trigger>
+      )}
       <Sheet.Portal>
-         <Sheet.View
-            className="PageFromBottom-view"
-            contentPlacement="bottom"
-            swipe={false}
-            nativeEdgeSwipePrevention={true}
-         >
-            <Sheet.Backdrop className="PageFromBottom-backdrop" travelAnimation={{ opacity: [0, 0.1] }} />
-            <Sheet.Content className="PageFromBottom-content">
-               <div className="PageFromBottom-topBar">
-                  <Sheet.Trigger className="PageFromBottom-dismissTrigger" action="dismiss">
-                     Close
-                  </Sheet.Trigger>
-               </div>
-               <div className="p-6 space-y-4 text-gray-900">
-                  <h2 className="text-xl font-semibold text-black">Page from Bottom Example</h2>
-                  <p className="text-gray-700">This is a page that slides in from the bottom of the screen.</p>
-                  <p className="text-gray-700">It takes up the full height of the viewport.</p>
-               </div>
-            </Sheet.Content>
-         </Sheet.View>
+        <Sheet.View
+          className="PageFromBottom-view"
+          contentPlacement="bottom"
+          swipe={false}
+          nativeEdgeSwipePrevention={true}
+        >
+          <Sheet.Backdrop className="PageFromBottom-backdrop" travelAnimation={{ opacity: [0, 0.1] }} />
+          <Sheet.Content className="PageFromBottom-content">
+            <div className="PageFromBottom-topBar">
+              <Sheet.Trigger className="PageFromBottom-dismissTrigger" action="dismiss">
+                Close
+              </Sheet.Trigger>
+            </div>
+            {sheetContent}
+          </Sheet.Content>
+        </Sheet.View>
       </Sheet.Portal>
-   </Sheet.Root>
-);
+    </Sheet.Root>
+  );
+};
 
 export { PageFromBottom }; 
