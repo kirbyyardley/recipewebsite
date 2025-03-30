@@ -31,7 +31,7 @@ export default function Home() {
           {!isLoading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {recipes.map((recipe) => (
-                <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
+                <Link key={recipe.id} href={`/recipes/${recipe.slug}`}>
                   <div className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                     <div className="relative h-48 w-full">
                       <Image 

@@ -8,6 +8,14 @@ export type Recipe = {
   description: string;
   image_url: string;
   created_at: string;
+  updated_at?: string;
+  slug: string;
+  prep_time?: number;
+  cook_time?: number;
+  servings?: number;
+  difficulty?: number;
+  instructions?: any;
+  primary_cuisine?: any;
 };
 
 // Create Supabase client
