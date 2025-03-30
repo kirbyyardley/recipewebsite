@@ -1,0 +1,116 @@
+.PersistentSheet-view {
+  /* SELF-LAYOUT */
+  z-index: 1;
+  height: calc(var(--silk-100-lvh-dvh-pct));
+  top: env(safe-area-inset-top, 0px);
+  bottom: initial;
+}
+
+.PersistentSheet-content {
+  /* SELF-LAYOUT */
+  width: 100%;
+  height: 100%;
+
+  /* APPEARANCE */
+  background-color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  /* INNER-LAYOUT */
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.PersistentSheet-backdrop {
+  /* APPEARANCE */
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.PersistentSheet-trigger {
+  padding: 10px 16px;
+  background-color: #4F46E5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.PersistentSheet-trigger:hover {
+  background-color: #4338CA;
+}
+
+.PersistentSheet-actualContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.PersistentSheet-retractedContentContainer {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  padding: 0 16px;
+  border-top: 1px solid #f1f1f1;
+  background-color: white;
+}
+
+.PersistentSheet-expandTrigger {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background-color: #4F46E5;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.PersistentSheet-expandTrigger:hover {
+  background-color: #4338CA;
+}
+
+/* Example contents styles */
+
+.ExamplePersistentSheet-retractedRoot {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ExamplePersistentSheet-retractedPicture {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.ExamplePersistentSheet-retractedTextContent {
+  margin-left: 16px;
+  flex: 1;
+}
+
+.ExamplePersistentSheet-retractedTitle {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1F2937;
+}
+
+.ExamplePersistentSheet-retractedSubtitle {
+  font-size: 14px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.ExamplePersistentSheet-retractedPlayButton {
+  width: 28px;
+  height: 28px;
+  color: #4F46E5;
+} 
