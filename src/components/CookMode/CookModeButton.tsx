@@ -1,7 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { PageFromBottom } from '@/components/PageFromBottom';
+// Remove PageFromBottom import
+// import { PageFromBottom } from '@/components/PageFromBottom'; 
+// Import the core Sheet component from Silk
+import { Sheet } from '@silk-hq/components'; 
 import { InstructionStep } from '@/services/recipes';
 import './CookModeButton.css';
 
@@ -11,18 +14,15 @@ interface CookModeButtonProps {
 }
 
 export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Event handlers
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+  // We might not need explicit isOpen state if Sheet.Trigger handles it,
+  // but let's keep it for now in case we need it later for hiding the button.
+  const [isOpen, setIsOpen] = useState(false); 
 
   const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
+    setIsOpen(open); // Keep updating state if sheet provides updates
   };
 
-  // Content for the PageFromBottom component
+  // Content for the Sheet component remains the same
   const cookModeContent = (
     <div className="cook-mode-content">
       <h2 className="text-2xl font-bold mb-6">{recipeTitle}</h2>
@@ -51,25 +51,31 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
   );
 
   return (
-    <>
-      {/* Only show the button when cook mode is not open */}
-      {!isOpen && (
+    // Use Sheet.Root to contain the trigger and portal
+    <Sheet.Root license="commercial"> 
+      {/* Wrap the FAB with Sheet.Trigger */}
+      <Sheet.Trigger asChild>
         <button 
           className="cook-mode-fab"
-          onClick={handleOpen}
           aria-label="Start cooking"
         >
           <span className="cook-mode-fab-icon">👨‍🍳</span>
           <span className="cook-mode-fab-text">Start Cooking</span>
         </button>
-      )}
+      </Sheet.Trigger>
 
-      <PageFromBottom
-        isOpen={isOpen}
-        onOpenChange={handleOpenChange}
-        sheetContent={cookModeContent}
-      />
-    </>
+      {/* Basic Silk Sheet implementation */} 
+      <Sheet.Portal>
+        {/* Temporarily remove Sheet.Backdrop for debugging */}
+        {/* <Sheet.Backdrop /> */}
+        <Sheet.View>
+          <Sheet.Content>
+             <Sheet.Handle />
+            {cookModeContent} 
+          </Sheet.Content>
+        </Sheet.View>
+      </Sheet.Portal>
+    </Sheet.Root>
   );
 }
 
