@@ -55,11 +55,6 @@
   padding: 0 16px;
   border-top: 1px solid #f1f1f1;
   background-color: white;
-  transition: background-color 0.2s ease;
-}
-
-.PersistentSheet-retractedContentContainer:hover {
-  background-color: #f9fafb;
 }
 
 .PersistentSheet-expandTrigger {

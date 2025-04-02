@@ -9,7 +9,7 @@ This is a mobile-first web application for AI-aggregated recipes, focused on opt
 - Next.JS @https://nextjs.org/docs
 - Font Awesome Icons @https://docs.fontawesome.com/
 - Tailwind CSS @https://tailwindcss.com/docs/installation/using-vite
-- Silk @https://silkhq.notion.site/Silk-Components-fad7232e08a24cf6bf9008749cc09879
+- Silk @https://github.com/silk-hq/
 - Supabase (includes MCP Server) @https://supabase.com/docs
 
 ## Performance Metrics
