@@ -27,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="theme-color" content="rgb(255, 255, 255)" />
         <Script 
           src="/fontawesome/js/fontawesome.js"
           strategy="beforeInteractive"

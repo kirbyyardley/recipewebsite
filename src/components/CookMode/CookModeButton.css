@@ -2,39 +2,127 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
+  background-color: #2563eb;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
-  padding: 0.75rem 1.25rem;
-  background-color: #3182CE;
-  color: white;
-  border-radius: 9999px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 10;
-  border: none;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  z-index: 40;
+  transition: transform 0.2s ease-in-out;
 }
 
 .cook-mode-fab:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.cook-mode-fab:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: scale(1.05);
 }
 
 .cook-mode-fab-icon {
-  font-size: 1.25rem;
-  margin-right: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .cook-mode-fab-text {
-  font-weight: 500;
+  font-weight: 600;
 }
 
-.cook-mode-content {
-  padding: 1.5rem;
+/* Sheet View styles */
+.cook-mode-view {
+  z-index: 1;
+  bottom: -1px; /* Avoid subpixel misalignment in Safari */
+  width: 100%;
+  height: calc(100% + 1px); /* +1px to compensate for the bottom -1px */
+}
+
+.cook-mode-view.detent2-true {
+  bottom: initial;
+  top: 0;
+}
+
+/* Theme color dimming controller */
+.cook-mode-theme-color-dimming-controller {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Sheet Content styles */
+.cook-mode-sheet-content {
+  height: 100%;
+  box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);
+  background-color: white;
+}
+
+.cook-mode-sheet-content.detent2-true {
+  height: 100%;
+}
+
+/* Actual content container */
+.cook-mode-actual-content {
+  height: 100%;
+  width: 100%;
+  padding-top: env(safe-area-inset-top, 0px);
+  display: grid;
+  position: relative;
+}
+
+/* Retracted content styles */
+.cook-mode-retracted-content-container {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 76px;
+  padding: 1rem;
+}
+
+.cook-mode-retracted-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Expand trigger */
+.cook-mode-expand-trigger {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 76px;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+}
+
+/* Expanded content styles */
+.cook-mode-expanded-content-container {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  display: grid;
+  padding: 1rem;
   overflow-y: auto;
-  max-height: 100%;
+}
+
+.cook-mode-expanded-content {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Backdrop */
+.cook-mode-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0 0 0);
+  opacity: 0;
+  z-index: 40;
+}
+
+/* Instruction text styles */
+.instruction-text {
+  line-height: 1.6;
+}
+
+.instruction-text strong {
+  color: #1e40af;
+  font-weight: 600;
 } 
