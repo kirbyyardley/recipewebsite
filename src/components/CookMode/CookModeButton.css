@@ -142,4 +142,25 @@
   border: 0;
   border-radius: 9999px;
   background-color: rgba(255, 255, 255, 0.66);
+}
+
+/* Close button styles */
+.cook-mode-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.cook-mode-close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
 } 

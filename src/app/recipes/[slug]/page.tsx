@@ -126,35 +126,6 @@ export default async function RecipePage({ params }: Props) {
         </div>
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">Instructions</h2>
-        {instructions.length > 0 ? (
-          <ol className="space-y-6">
-            {instructions.map((instruction, index) => (
-              <li key={index} className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex items-start">
-                  <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 flex-shrink-0">
-                    {instruction.step || index + 1}
-                  </div>
-                  <div>
-                    {instruction.processed_description ? (
-                      <div 
-                        className="text-gray-700 instruction-text"
-                        dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
-                      />
-                    ) : (
-                      <p className="text-gray-700">{instruction.description}</p>
-                    )}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="text-gray-500">No instructions available for this recipe.</p>
-        )}
-      </div>
-
       {/* Cook Mode Button - Client Component */}
       <CookModeWrapper 
         instructions={instructions} 
