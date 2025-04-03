@@ -50,7 +50,7 @@
 .cook-mode-sheet-content {
   height: 100%;
   box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);
-  background-color: white;
+  background-color: #000000;
 }
 
 .cook-mode-sheet-content.detent2-true {
@@ -119,10 +119,27 @@
 
 /* Instruction text styles */
 .instruction-text {
-  line-height: 1.6;
+  line-height: 1.2;
+  font-size: 1.2rem;
 }
 
 .instruction-text strong {
   color: #1e40af;
   font-weight: 600;
+}
+
+/* Add styles for non-processed instruction text */
+.cook-mode-expanded-content p {
+  font-size: 1.2rem;
+}
+
+/* Expanded handle styles */
+.cook-mode-expanded-handle {
+  margin-top: var(--size-4);
+  justify-self: center;
+  width: 50px;
+  height: 6px;
+  border: 0;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.66);
 } 

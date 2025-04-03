@@ -26,8 +26,7 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
   // Theme color dimming
   const { setDimmingOverlayOpacity } = useThemeColorDimmingOverlay({
     elementRef: themeColorDimmingControllerRef,
-    dimmingColor: "rgb(255, 255, 255)",
-    fallbackColor: "rgb(255, 255, 255)"
+    dimmingColor: "rgb(255, 255, 255)"
   });
 
   // Handlers
@@ -75,17 +74,17 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
   // Content components
   const retractedContent = (
     <div className="cook-mode-retracted-content">
-      <h2 className="text-xl font-bold">{recipeTitle}</h2>
-      <p className="text-gray-600">Pull up to view recipe steps</p>
+      <h2 className="text-xl font-bold text-white">{recipeTitle}</h2>
+      <p className="text-white">Pull up to view recipe steps</p>
     </div>
   );
 
   const expandedContent = (
     <div className="cook-mode-expanded-content">
-      <h2 className="text-2xl font-bold mb-6">{recipeTitle}</h2>
+      <h3 className="text-2xl font-bold mb-6 text-white">{recipeTitle}</h3>
       <div className="space-y-6">
         {instructions.map((instruction, index) => (
-          <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
+          <div key={index} className="p-2 rounded-lg shadow-sm">
             <div className="flex items-start">
               <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 flex-shrink-0">
                 {instruction.step || index + 1}
@@ -93,11 +92,11 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
               <div>
                 {instruction.processed_description ? (
                   <div 
-                    className="text-gray-700 instruction-text"
+                    className="text-white instruction-text"
                     dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
                   />
                 ) : (
-                  <p className="text-gray-700">{instruction.description}</p>
+                  <p className="text-white">{instruction.description}</p>
                 )}
               </div>
             </div>
@@ -178,6 +177,7 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
                       className="cook-mode-expanded-content-container"
                       ref={expandedContentRef}
                     >
+                      <Sheet.Handle className="cook-mode-expanded-handle" />
                       {expandedContent}
                     </div>
                   )}
