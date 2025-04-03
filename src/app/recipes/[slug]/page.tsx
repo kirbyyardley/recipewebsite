@@ -129,7 +129,8 @@ export default async function RecipePage({ params }: Props) {
       {/* Cook Mode Button - Client Component */}
       <CookModeWrapper 
         instructions={instructions} 
-        recipeTitle={recipe.title} 
+        recipeTitle={recipe.title}
+        imageUrl={recipe.image_url}
       />
     </div>
   );

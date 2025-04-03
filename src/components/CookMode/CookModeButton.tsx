@@ -8,14 +8,16 @@ import './CookModeButton.css';
 interface CookModeButtonProps {
   instructions: InstructionStep[];
   recipeTitle: string;
+  imageUrl: string;
 }
 
-export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProps) {
+export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookModeButtonProps) {
   // State
   const [isOpen, setIsOpen] = useState(false);
   const [range, setRange] = useState({ start: 0, end: 0 });
   const [inertOutside, setInertOutside] = useState(false);
   const [activeDetent, setActiveDetent] = useState(2); // Start at detent 2 (expanded)
+  const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
 
   // Refs
   const contentRef = useRef<HTMLDivElement>(null);
@@ -36,14 +38,8 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
   };
 
   const rangeChangeHandler = useCallback((newRange: { start: number; end: number }) => {
-    setRange((prevRange) => {
-      const goingFromDetent1ToDetent2 = prevRange.start === 1 && prevRange.end === 1 && newRange.end === 2;
-      const onDetent2 = newRange.start === 2 && newRange.end === 2;
-
-      setInertOutside(goingFromDetent1ToDetent2 || onDetent2);
-
-      return newRange;
-    });
+    setRange(newRange);
+    setInertOutside(newRange.start === 2 && newRange.end === 2);
   }, []);
 
   const travelHandler = useCallback(({ progress, range, progressAtDetents }: { 
@@ -53,30 +49,60 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
   }) => {
     if (!progressAtDetents) return;
 
-    if (range.end > 1) {
-      const normalisedProgress = (progress - progressAtDetents[1]) / (1 - progressAtDetents[1]);
+    // Calculate normalized progress for all animations
+    const normalisedProgress = range.end > 1 
+      ? (progress - progressAtDetents[1]) / (1 - progressAtDetents[1])
+      : progress;
 
-      if (retractedContentRef.current) {
-        retractedContentRef.current.style.setProperty('opacity', (1 - normalisedProgress).toString());
-      }
+    // Apply all animations simultaneously
+    if (retractedContentRef.current) {
+      retractedContentRef.current.style.setProperty('opacity', (1 - normalisedProgress).toString());
+    }
 
-      setDimmingOverlayOpacity(normalisedProgress);
+    setDimmingOverlayOpacity(normalisedProgress);
 
-      if (backdropRef.current) {
-        backdropRef.current.style.setProperty('opacity', (normalisedProgress * 0.25).toString());
-      }
+    if (backdropRef.current) {
+      backdropRef.current.style.setProperty('opacity', (normalisedProgress * 0.25).toString());
+    }
 
-      if (expandedContentRef.current) {
-        expandedContentRef.current.style.setProperty('opacity', normalisedProgress.toString());
-      }
+    if (expandedContentRef.current) {
+      expandedContentRef.current.style.setProperty('opacity', normalisedProgress.toString());
     }
   }, [setDimmingOverlayOpacity]);
+
+  const toggleStep = (index: number) => {
+    setCheckedSteps(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const progressPercentage = (checkedSteps.length / instructions.length) * 100;
+  const progressRotation = (checkedSteps.length / instructions.length) * 360;
 
   // Content components
   const retractedContent = (
     <div className="cook-mode-retracted-content">
-      <h2 className="text-xl font-bold text-white">{recipeTitle}</h2>
-      <p className="text-white">Pull up to view recipe steps</p>
+      <div className="flex items-center gap-4">
+        <div className="cook-mode-recipe-image">
+          <img src={imageUrl} alt={recipeTitle} className="w-full h-full object-cover rounded-lg" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-white mb-1">{recipeTitle}</h3>
+          <p className="text-sm text-white/70">
+            {checkedSteps.length} of {instructions.length} steps complete
+          </p>
+        </div>
+        <div 
+          className="cook-mode-progress-circle self-center" 
+          style={{ '--progress-rotation': `${progressRotation}deg` } as React.CSSProperties}
+          role="progressbar"
+          aria-valuenow={progressPercentage}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        />
+      </div>
     </div>
   );
 
@@ -87,17 +113,43 @@ export function CookModeButton({ instructions, recipeTitle }: CookModeButtonProp
         {instructions.map((instruction, index) => (
           <div key={index} className="p-2 rounded-lg shadow-sm">
             <div className="flex items-start">
-              <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-4 flex-shrink-0">
-                {instruction.step || index + 1}
+              <div 
+                className={`cook-mode-step-checkbox ${checkedSteps.includes(index) ? 'checked' : ''}`}
+                onClick={() => toggleStep(index)}
+                role="checkbox"
+                aria-checked={checkedSteps.includes(index)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleStep(index);
+                  }
+                }}
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
               </div>
               <div>
                 {instruction.processed_description ? (
                   <div 
-                    className="text-white instruction-text"
+                    className={`text-white instruction-text ${checkedSteps.includes(index) ? 'completed' : ''}`}
                     dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
                   />
                 ) : (
-                  <p className="text-white">{instruction.description}</p>
+                  <p className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}>
+                    {instruction.description}
+                  </p>
                 )}
               </div>
             </div>

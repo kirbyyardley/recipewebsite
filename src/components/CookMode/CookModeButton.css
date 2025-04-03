@@ -82,6 +82,15 @@
   justify-content: center;
 }
 
+.cook-mode-recipe-image {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Expand trigger */
 .cook-mode-expand-trigger {
   position: absolute;
@@ -121,6 +130,12 @@
 .instruction-text {
   line-height: 1.2;
   font-size: 1.2rem;
+  transition: opacity 0.2s ease;
+}
+
+.instruction-text.completed {
+  opacity: 0.5;
+  text-decoration: line-through;
 }
 
 .instruction-text strong {
@@ -131,6 +146,11 @@
 /* Add styles for non-processed instruction text */
 .cook-mode-expanded-content p {
   font-size: 1.2rem;
+  transition: opacity 0.2s ease;
+}
+
+.cook-mode-expanded-content p.completed {
+  opacity: 0.5;
 }
 
 /* Expanded handle styles */
@@ -163,4 +183,78 @@
 
 .cook-mode-close-button:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* Step checkbox styles */
+.cook-mode-step-checkbox {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cook-mode-step-checkbox:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.cook-mode-step-checkbox.checked {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.cook-mode-step-checkbox.checked svg {
+  display: block;
+}
+
+.cook-mode-step-checkbox svg {
+  display: none;
+  color: #000000;
+}
+
+/* Progress circle styles */
+.cook-mode-progress-circle {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  margin-left: 1.5rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cook-mode-progress-circle::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%);
+  transform: rotate(var(--progress-rotation));
+  transition: transform 0.3s ease;
+}
+
+.cook-mode-progress-circle::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-right: 3px solid rgba(255, 255, 255, 0.8);
+  border-top: 3px solid rgba(255, 255, 255, 0.8);
+  transform: translateY(4px) rotate(-45deg);
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(4px) rotate(-45deg); opacity: 0.5; }
+  50% { transform: translateY(-4px) rotate(-45deg); opacity: 1; }
+  100% { transform: translateY(4px) rotate(-45deg); opacity: 0.5; }
 } 
