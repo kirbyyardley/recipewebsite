@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@silk-hq/components": "^0.8.13",
+    "@silk-hq/components": "^0.8.14",
     "@supabase/supabase-js": "^2.49.4",
     "next": "15.2.4",
     "react": "^19.0.0",
