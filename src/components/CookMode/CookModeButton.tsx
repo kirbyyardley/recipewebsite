@@ -107,54 +107,79 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
   );
 
   const expandedContent = (
-    <div className="cook-mode-expanded-content">
-      <h3 className="text-2xl font-bold mb-6 text-white">{recipeTitle}</h3>
-      <div className="space-y-6">
-        {instructions.map((instruction, index) => (
-          <div key={index} className="p-2 rounded-lg shadow-sm">
-            <div className="flex items-start">
-              <div 
-                className={`cook-mode-step-checkbox ${checkedSteps.includes(index) ? 'checked' : ''}`}
-                onClick={() => toggleStep(index)}
-                role="checkbox"
-                aria-checked={checkedSteps.includes(index)}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleStep(index);
-                  }
-                }}
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="20" 
-                  height="20" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
+    <div className="cook-mode-expanded-content-container">
+      <div className="cook-mode-expanded-header">
+        <Sheet.Handle className="cook-mode-expanded-handle" />
+        <Sheet.Trigger 
+          className="cook-mode-close-button"
+          action="dismiss"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </Sheet.Trigger>
+        <h3 className="text-2xl font-bold text-white">{recipeTitle}</h3>
+      </div>
+      
+      <div className="cook-mode-expanded-content">
+        <div className="space-y-6">
+          {instructions.map((instruction, index) => (
+            <div key={index} className="p-2 rounded-lg shadow-sm">
+              <div className="flex items-start">
+                <div 
+                  className={`cook-mode-step-checkbox ${checkedSteps.includes(index) ? 'checked' : ''}`}
+                  onClick={() => toggleStep(index)}
+                  role="checkbox"
+                  aria-checked={checkedSteps.includes(index)}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      toggleStep(index);
+                    }
+                  }}
                 >
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <div>
-                {instruction.processed_description ? (
-                  <div 
-                    className={`text-white instruction-text ${checkedSteps.includes(index) ? 'completed' : ''}`}
-                    dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
-                  />
-                ) : (
-                  <p className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}>
-                    {instruction.description}
-                  </p>
-                )}
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  {instruction.processed_description ? (
+                    <div 
+                      className={`text-white instruction-text ${checkedSteps.includes(index) ? 'completed' : ''}`}
+                      dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
+                    />
+                  ) : (
+                    <p className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}>
+                      {instruction.description}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -235,26 +260,6 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
                       className="cook-mode-expanded-content-container"
                       ref={expandedContentRef}
                     >
-                      <Sheet.Handle className="cook-mode-expanded-handle" />
-                      <Sheet.Trigger 
-                        className="cook-mode-close-button"
-                        action="dismiss"
-                      >
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          width="24" 
-                          height="24" 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          strokeWidth="2" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </Sheet.Trigger>
                       {expandedContent}
                     </div>
                   )}
