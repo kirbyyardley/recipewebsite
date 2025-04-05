@@ -89,7 +89,7 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
           <img src={imageUrl} alt={recipeTitle} className="w-full h-full object-cover rounded-lg" />
         </div>
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-white mb-1">{recipeTitle}</h3>
+          <h3 className="text-medium font-bold text-white">{recipeTitle}</h3>
           <p className="text-sm text-white/70">
             {checkedSteps.length} of {instructions.length} steps complete
           </p>
@@ -129,7 +129,7 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </Sheet.Trigger>
-        <h3 className="text-2xl font-bold text-white">{recipeTitle}</h3>
+        <h3 className="text-xl font-bold text-white mb-4">{recipeTitle}</h3>
       </div>
       
       <div className="cook-mode-expanded-content">

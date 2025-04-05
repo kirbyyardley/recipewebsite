@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Metadata, ResolvingMetadata } from 'next';
 import { getRecipeBySlug, RecipeWithIngredients } from '@/services/recipes';
 import CookModeWrapper from '@/components/CookMode/CookModeWrapper';
+import Header from '@/components/Header/Header';
 import './recipe-page.css'; // Import the CSS file
 
 type Props = {
@@ -61,27 +62,23 @@ export default async function RecipePage({ params }: Props) {
   const instructions = recipe.processed_instructions || [];
 
   return (
-    <div className="min-h-screen px-4 py-8 max-w-6xl mx-auto">
-      <Link href="/" className="inline-block mb-6 text-blue-600 hover:underline">
-        ← Back to Recipes
-      </Link>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <div className="relative w-full rounded-lg overflow-hidden" style={{ height: '450px' }}>
-            <Image 
-              src={recipe.image_url} 
-              alt={recipe.title}
-              fill
-              priority
-              className="object-cover"
-            />
-          </div>
+    <div className="min-h-screen">
+      <Header title={recipe.title} />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="relative w-full" style={{ aspectRatio: '3/2' }}>
+          <Image 
+            src={recipe.image_url} 
+            alt={recipe.title}
+            fill
+            priority
+            className="object-cover"
+          />
         </div>
 
-        <div>
-          <h1 className="text-3xl font-bold mb-4">{recipe.title}</h1>
-          <p className="text-gray-700 mb-6">{recipe.description}</p>
+        <div className="px-4 py-4">
+          <h1 className="text-xl font-bold mb-2">{recipe.title}</h1>
+          <p className="text-gray-700 mb-4">{recipe.description}</p>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-gray-100 p-4 rounded-lg">
@@ -113,7 +110,7 @@ export default async function RecipePage({ params }: Props) {
                   </span>
                   <div>
                     <span className="font-medium">
-                      {item.metric_amount}{item.metric_unit} {item.ingredient?.name}
+                      {item.metric_amount}{item.metric_unit} {item.ingredients?.name}
                     </span>
                     {item.notes && (
                       <span className="text-gray-500 text-sm ml-2">({item.notes})</span>
@@ -126,12 +123,14 @@ export default async function RecipePage({ params }: Props) {
         </div>
       </div>
 
-      {/* Cook Mode Button - Client Component */}
-      <CookModeWrapper 
-        instructions={instructions} 
-        recipeTitle={recipe.title}
-        imageUrl={recipe.image_url}
-      />
+      <div className="px-4 max-w-6xl mx-auto">
+        {/* Cook Mode Button - Client Component */}
+        <CookModeWrapper 
+          instructions={instructions} 
+          recipeTitle={recipe.title}
+          imageUrl={recipe.image_url}
+        />
+      </div>
     </div>
   );
 } 
