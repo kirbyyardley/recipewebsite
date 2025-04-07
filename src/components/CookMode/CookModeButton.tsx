@@ -135,7 +135,7 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
       <div className="cook-mode-expanded-content">
         <div className="space-y-6">
           {instructions.map((instruction, index) => (
-            <div key={index} className="p-2 rounded-lg shadow-sm">
+            <div key={index} className="p-2 rounded-lg shadow-sm cook-mode-step-container">
               <div className="flex items-start">
                 <div 
                   className={`cook-mode-step-checkbox ${checkedSteps.includes(index) ? 'checked' : ''}`}
@@ -164,7 +164,7 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
-                <div>
+                <div className="cook-mode-step-text">
                   {instruction.processed_description ? (
                     <div 
                       className={`text-white instruction-text ${checkedSteps.includes(index) ? 'completed' : ''}`}
