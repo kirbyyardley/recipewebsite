@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Script from 'next/script';
 import { NavigationProvider } from "@/lib/contexts/navigation-context";
 
 const geistSans = Geist({
@@ -28,17 +27,12 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="theme-color" content="rgb(255, 255, 255)" />
-        <Script 
-          src="/fontawesome/js/fontawesome.js"
-          strategy="beforeInteractive"
-        />
-        <Script 
-          src="/fontawesome/js/solid.js"
-          strategy="beforeInteractive"
-        />
-        <Script 
-          src="/fontawesome/js/brands.js"
-          strategy="beforeInteractive"
+        <link 
+          rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" 
+          crossOrigin="anonymous" 
+          referrerPolicy="no-referrer" 
         />
       </head>
       <body
