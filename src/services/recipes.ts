@@ -12,6 +12,19 @@ export interface Ingredient {
   name: string;
 }
 
+// Interface for nutrition information
+export interface NutritionInfo {
+  id: string;
+  recipe_id: string;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
+  sugar_g: number;
+  sodium_mg: number;
+}
+
 // Interface for recipe ingredient with quantities
 export interface RecipeIngredient {
   id: string;
@@ -38,6 +51,7 @@ export interface InstructionStep {
 export interface RecipeWithIngredients extends Recipe {
   recipe_ingredients?: RecipeIngredient[];
   processed_instructions?: InstructionStep[];
+  nutrition?: NutritionInfo | null;
 }
 
 export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredients | null> {
@@ -66,6 +80,18 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     if (ingredientsError) {
       console.error('Error fetching recipe ingredients:', ingredientsError);
       // Continue with the recipe even if ingredients failed to load
+    }
+
+    // Fetch nutrition information
+    const { data: nutritionData, error: nutritionError } = await supabase
+      .from('recipe_nutrition')
+      .select('*')
+      .eq('recipe_id', recipe.id)
+      .maybeSingle();
+    
+    if (nutritionError) {
+      console.error('Error fetching nutrition data:', nutritionError);
+      // Continue with the recipe even if nutrition failed to load
     }
 
     // Format ingredients for easy lookup
@@ -133,7 +159,8 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     return {
       ...recipe,
       recipe_ingredients: recipeIngredients || [],
-      processed_instructions: processedInstructions
+      processed_instructions: processedInstructions,
+      nutrition: nutritionData || null
     };
   } catch (err) {
     console.error('Error fetching recipe with details:', err);

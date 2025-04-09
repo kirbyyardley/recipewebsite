@@ -19,3 +19,9 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Extra padding at the bottom to ensure content isn't hidden behind FABs */
+.page-content {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  min-height: 100vh;
+}

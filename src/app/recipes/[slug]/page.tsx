@@ -6,6 +6,7 @@ import { getRecipeBySlug, RecipeWithIngredients } from '@/services/recipes';
 import CookModeWrapper from '@/components/CookMode/CookModeWrapper';
 import Header from '@/components/Header/Header';
 import './recipe-page.css'; // Import the CSS file
+import NutritionSection from '@/components/Nutrition/NutritionSection';
 
 type Props = {
   params: { slug: string };
@@ -47,17 +48,6 @@ export default async function RecipePage({ params }: Props) {
     return hours > 0 ? `${hours} hr ${mins > 0 ? `${mins} min` : ''}` : `${mins} min`;
   };
 
-  // Convert difficulty level number to text
-  const getDifficultyText = (level?: number) => {
-    if (!level) return 'Unknown';
-    const difficultyMap: Record<number, string> = {
-      1: 'Easy',
-      2: 'Moderate',
-      3: 'Hard'
-    };
-    return difficultyMap[level] || 'Unknown';
-  };
-
   // Get the processed instructions
   const instructions = recipe.processed_instructions || [];
 
@@ -66,7 +56,7 @@ export default async function RecipePage({ params }: Props) {
       <Header title={recipe.title} />
       
       <div className="grid grid-cols-1 md:grid-cols-2">
-        <div className="relative w-full" style={{ aspectRatio: '3/2' }}>
+        <div className="relative w-full" style={{ aspectRatio: '1/1' }}>
           <Image 
             src={recipe.image_url} 
             alt={recipe.title}
@@ -80,7 +70,7 @@ export default async function RecipePage({ params }: Props) {
           <h1 className="text-xl font-bold mb-2">{recipe.title}</h1>
           <p className="text-gray-700 mb-4">{recipe.description}</p>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-4 mb-6">
             <div className="bg-gray-100 p-4 rounded-lg">
               <div className="text-gray-500 text-sm">Prep Time</div>
               <div className="font-semibold">{formatTime(recipe.prep_time)}</div>
@@ -93,29 +83,30 @@ export default async function RecipePage({ params }: Props) {
               <div className="text-gray-500 text-sm">Servings</div>
               <div className="font-semibold">{recipe.servings || '-'}</div>
             </div>
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <div className="text-gray-500 text-sm">Difficulty</div>
-              <div className="font-semibold">{getDifficultyText(recipe.difficulty)}</div>
-            </div>
           </div>
 
           {/* Ingredients Section */}
           <div className="mt-6">
             <h2 className="text-xl font-bold mb-4">Ingredients</h2>
-            <ul className="space-y-2">
+            <ul className="space-y-4">
               {recipe.recipe_ingredients?.map((item) => (
-                <li key={item.id} className="flex items-start">
-                  <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-2 mt-0.5">
-                    {item.optional ? "?" : "✓"}
-                  </span>
-                  <div>
-                    <span className="font-medium">
-                      {item.metric_amount}{item.metric_unit} {item.ingredients?.name}
+                <li key={item.id} className="flex items-start justify-between">
+                  <div className="flex items-start">
+                    <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                      {item.optional ? "?" : "✓"}
                     </span>
-                    {item.notes && (
-                      <span className="text-gray-500 text-sm ml-2">({item.notes})</span>
-                    )}
+                    <div>
+                      <span className="font-medium">
+                        {item.ingredients?.name}
+                        {item.notes && (
+                          <span className="text-gray-500 text-sm ml-2">({item.notes})</span>
+                        )}
+                      </span>
+                    </div>
                   </div>
+                  <span className="font-medium text-right">
+                    {item.metric_amount}{item.metric_unit}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -130,6 +121,22 @@ export default async function RecipePage({ params }: Props) {
           recipeTitle={recipe.title}
           imageUrl={recipe.image_url}
         />
+        
+        {/* Nutrition Information Section */}
+        {recipe.nutrition && (
+          <NutritionSection 
+            calories={Math.round(recipe.nutrition.calories)} 
+            protein={Math.round(recipe.nutrition.protein_g)} 
+            carbs={Math.round(recipe.nutrition.carbs_g)} 
+            fat={Math.round(recipe.nutrition.fat_g)}
+            fiber={recipe.nutrition.fiber_g}
+            sugar={recipe.nutrition.sugar_g}
+            sodium={recipe.nutrition.sodium_mg}
+          />
+        )}
+        
+        {/* Extra space at the bottom */}
+        <div className="h-24"></div>
       </div>
     </div>
   );
