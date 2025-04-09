@@ -18,7 +18,7 @@ export default async function Home() {
               href={`/recipes/${recipe.slug}`}
               className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="relative w-full pt-[66.67%]">
+              <div className="relative w-full pt-[100%]">
                 <Image
                   src={recipe.image_url}
                   alt={recipe.title}
