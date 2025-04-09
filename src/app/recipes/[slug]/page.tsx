@@ -6,7 +6,7 @@ import { getRecipeBySlug, RecipeWithIngredients } from '@/services/recipes';
 import CookModeWrapper from '@/components/CookMode/CookModeWrapper';
 import Header from '@/components/Header/Header';
 import './recipe-page.css'; // Import the CSS file
-import NutritionSection from '@/components/Nutrition/NutritionSection';
+import { NutritionSection } from '@/components/Nutrition';
 
 type Props = {
   params: { slug: string };

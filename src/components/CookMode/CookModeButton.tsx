@@ -25,6 +25,7 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
   const backdropRef = useRef<HTMLDivElement>(null);
   const retractedContentRef = useRef<HTMLDivElement>(null);
   const expandedContentRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
 
   // Theme color dimming
   const { setDimmingOverlayOpacity } = useThemeColorDimmingOverlay({
@@ -70,6 +71,13 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
     }
   }, [setDimmingOverlayOpacity]);
 
+  const handleManualStep = useCallback(() => {
+    // Only proceed if we're at detent 2 (expanded)
+    if (activeDetent === 2) {
+      setActiveDetent(1); // Step to detent 1 (minimized)
+    }
+  }, [activeDetent]);
+
   const toggleStep = (index: number) => {
     setCheckedSteps(prev => 
       prev.includes(index) 
@@ -109,7 +117,14 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
   const expandedContent = (
     <div className="cook-mode-expanded-content-container">
       <div className="cook-mode-expanded-header">
-        <Sheet.Handle className="cook-mode-expanded-handle" />
+        <div 
+          className="cook-mode-expanded-handle" 
+          onClick={handleManualStep}
+          role="button"
+          tabIndex={0}
+          aria-label="Minimize recipe"
+          ref={handleRef}
+        />
         <Sheet.Trigger 
           className="cook-mode-close-button"
           action="dismiss"
@@ -212,6 +227,10 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
           onClickOutside={{ dismiss: range.end !== 1 }}
           onTravel={travelHandler}
           nativeEdgeSwipePrevention={range.end !== 1}
+          steppingAnimationSettings={{
+            preset: "smooth", // Use the smooth preset for stepping animations
+            duration: 400    // Match the duration to swipe animations
+          }}
         >
           <div
             className="cook-mode-theme-color-dimming-controller"
