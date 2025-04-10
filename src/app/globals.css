@@ -61,3 +61,30 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
   min-height: 100vh;
 }
+
+/* Hide scrollbars */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Enable smooth touch scrolling for carousels */
+.featured-recipes-carousel {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.featured-recipes-carousel > div > a {
+  scroll-snap-align: start;
+  height: 280px; /* Standardized fixed height for all cards */
+}
+
+@media (min-width: 768px) {
+  .featured-recipes-carousel > div > a {
+    height: 300px; /* Slightly taller on desktop */
+  }
+}

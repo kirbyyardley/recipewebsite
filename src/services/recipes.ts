@@ -54,6 +54,14 @@ export interface RecipeWithIngredients extends Recipe {
   nutrition?: NutritionInfo | null;
 }
 
+// Interface for category data
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+}
+
 export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredients | null> {
   try {
     // Fetch the recipe
@@ -184,6 +192,77 @@ export async function getRecentRecipes(limit = 4): Promise<Recipe[]> {
     return data || [];
   } catch (err) {
     console.error('Error fetching recipes:', err);
+    return [];
+  }
+}
+
+export async function getCategories(): Promise<Category[]> {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
+
+    if (error) {
+      console.error('Error fetching categories:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (err) {
+    console.error('Error fetching categories:', err);
+    return [];
+  }
+}
+
+export async function getRecipesByCategory(categorySlug: string): Promise<Recipe[]> {
+  try {
+    // First, get the category ID from the slug
+    const { data: category, error: categoryError } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', categorySlug)
+      .single();
+
+    if (categoryError || !category) {
+      console.error('Error fetching category:', categoryError);
+      return [];
+    }
+
+    // Then get all recipe IDs in this category using the junction table
+    const { data: recipeCategories, error: recipeCategoriesError } = await supabase
+      .from('recipe_categories')
+      .select('recipe_id')
+      .eq('category_id', category.id);
+
+    if (recipeCategoriesError) {
+      console.error('Error fetching recipe categories:', recipeCategoriesError);
+      return [];
+    }
+
+    // If no recipes found in this category
+    if (!recipeCategories || recipeCategories.length === 0) {
+      return [];
+    }
+
+    // Extract recipe IDs
+    const recipeIds = recipeCategories.map(rc => rc.recipe_id);
+
+    // Finally, fetch the actual recipes
+    const { data: recipes, error: recipesError } = await supabase
+      .from('recipe')
+      .select('*')
+      .in('id', recipeIds)
+      .order('created_at', { ascending: false });
+
+    if (recipesError) {
+      console.error('Error fetching recipes by category:', recipesError);
+      return [];
+    }
+
+    return recipes || [];
+  } catch (err) {
+    console.error('Error fetching recipes by category:', err);
     return [];
   }
 } 
