@@ -117,6 +117,57 @@ export default async function RecipePage({ params }: Props) {
       </div>
 
       <div className="px-4 max-w-6xl mx-auto">
+        {/* Instructions Section */}
+        <div className="mt-8 mb-6">
+          <h2 className="text-xl font-bold mb-4">Instructions</h2>
+          <div className="space-y-6">
+            {instructions.map((instruction, index) => (
+              <div key={index} className="flex">
+                <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                  {instruction.step}
+                </div>
+                <div>
+                  <div 
+                    className="instruction-text"
+                    dangerouslySetInnerHTML={{ __html: instruction.processed_description || instruction.description }}
+                  />
+                  
+                  {/* Display timer if available */}
+                  {instruction.timer && (
+                    <div className="mt-2 flex items-center text-gray-600">
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                        className="text-gray-500"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span className="ml-1">
+                        {Math.floor(instruction.timer / 60)}:{(instruction.timer % 60).toString().padStart(2, '0')}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Display tip if available */}
+                  {instruction.tip && (
+                    <div className="mt-2 p-2 bg-blue-50 rounded text-sm text-gray-700">
+                      <strong>Tip:</strong> {instruction.tip}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
         {/* Cook Mode Button - Client Component */}
         <CookModeWrapper 
           instructions={instructions} 
