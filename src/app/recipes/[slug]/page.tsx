@@ -16,7 +16,8 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const recipe = await getRecipeBySlug(params.slug);
+  const { slug } = params;
+  const recipe = await getRecipeBySlug(slug);
   
   if (!recipe) {
     return {
@@ -34,7 +35,8 @@ export async function generateMetadata(
 }
 
 export default async function RecipePage({ params }: Props) {
-  const recipe = await getRecipeBySlug(params.slug);
+  const { slug } = params;
+  const recipe = await getRecipeBySlug(slug);
   
   if (!recipe) {
     notFound();
@@ -90,22 +92,22 @@ export default async function RecipePage({ params }: Props) {
             <h2 className="text-xl font-bold mb-4">Ingredients</h2>
             <ul className="space-y-4">
               {recipe.recipe_ingredients?.map((item) => (
-                <li key={item.id} className="flex items-start justify-between">
-                  <div className="flex items-start">
-                    <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-2 mt-0.5">
+                <li key={item.id} className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-2">
                       {item.optional ? "?" : "✓"}
                     </span>
                     <div>
                       <span className="font-medium">
                         {item.ingredients?.name}
-                        {item.notes && (
-                          <span className="text-gray-500 text-sm ml-2">({item.notes})</span>
-                        )}
                       </span>
+                      {item.notes && (
+                        <div className="text-gray-500 text-sm">{item.notes}</div>
+                      )}
                     </div>
                   </div>
                   <span className="font-medium text-right">
-                    {item.metric_amount}{item.metric_unit}
+                    {item.imperial_amount} {item.imperial_unit}
                   </span>
                 </li>
               ))}

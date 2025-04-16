@@ -32,8 +32,9 @@ This is a mobile-first web application for AI-aggregated recipes, focused on opt
 - Recipe generator - Users enter what they want to eat, almost as a search input, and we build a recipe specifically for them. 
 - Recipe directory - a list of recipes that are SEO optimized on the website
 - Cook mode - the easiest, no nonesense cooking experience ever designed for web
-<<<<<<< HEAD
-- A video for each recipe (LLM optimized)
-=======
-- A video for each recipe (LLM optimized)
->>>>>>> ac5e259d7df35b9dc5a1dc7cd1261907c9201441
+
+## Cook Mode Functionality
+
+- When a recipe page is open, a "Start cooking" floating action button will be displayed, which opens Cook Mode. 
+- When cook mode is opened by clicking "Start cooking" the UI will utilize a Persistent Sheet from Silk to open. The Persistent sheet will open and be expanded to show the entire Cook Mode experience.
+- Cook Mode can be minimized, meaning the persisntent sheet will remain visible at the bottom of the app in case users want to navigate elsewhere in the site/app. 

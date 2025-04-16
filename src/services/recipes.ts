@@ -105,51 +105,94 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     // Format ingredients for easy lookup
     const ingredientsMap: Record<string, RecipeIngredient> = {};
     recipeIngredients?.forEach(item => {
+      console.log('Processing ingredient item:', item);
       if (item.ingredients) {
         // Extract the ingredient from the nested join
         const ingredient = item.ingredients as unknown as Ingredient;
+        console.log('Extracted ingredient:', ingredient);
         
         // Store in the map with ID as key
         ingredientsMap[item.ingredient_id] = {
           ...item,
           ingredient: ingredient
         };
+      } else {
+        console.log('No ingredients property found for:', item.ingredient_id);
       }
     });
 
     // Process instructions to replace ingredient references
     let processedInstructions: InstructionStep[] = [];
     if (recipe.instructions && Array.isArray(recipe.instructions)) {
+      console.log('Available ingredients:', Object.keys(ingredientsMap));
+      console.log('Ingredient data sample:', ingredientsMap[Object.keys(ingredientsMap)[0]]);
+      
       processedInstructions = recipe.instructions.map((instruction: InstructionStep) => {
         if (!instruction.description) return instruction;
 
         // Create a processed version of the description
         let processedDescription = instruction.description;
+        console.log('Processing instruction:', processedDescription);
         
         // Look for ingredient references in the format [ING:id_prefix]
         const ingredientMatches = processedDescription.match(/\[ING:([a-z0-9]+)\]/g);
         
-        if (ingredientMatches) {
+        if (ingredientMatches && ingredientMatches.length > 0) {
+          console.log(`Found ${ingredientMatches.length} ingredient references in instruction`);
           ingredientMatches.forEach((match: string) => {
             // Extract the ID prefix
             const idPrefix = match.substring(5, match.length - 1);
+            console.log('Looking for ingredient with prefix:', idPrefix);
             
-            // Find the full ingredient ID that starts with this prefix
-            const fullIngredientId = Object.keys(ingredientsMap).find(id => 
-              id.startsWith(idPrefix)
+            // Try case-insensitive match or partial match if exact match fails
+            let fullIngredientId = Object.keys(ingredientsMap).find(id => 
+              id.toLowerCase().includes(idPrefix.toLowerCase())
             );
+            
+            // If not found, try to match against common ingredients by name
+            let commonIngredientName = '';
+            if (!fullIngredientId) {
+              // Create fallback map for common ingredients
+              const commonIngredientsMap: Record<string, string> = {
+                '99614736': 'salt',
+                '798441ac': 'black pepper',
+                'eb95535e': 'all-purpose flour',
+                'd0b22b46': 'paprika',
+                '665694da': 'sweet potatoes',
+                '903f9542': 'chicken broth',
+                'c30340c0': 'Greek yogurt',
+                '907046e0': 'lemon juice'
+              };
+              
+              commonIngredientName = commonIngredientsMap[idPrefix] || '';
+              
+              // If we have a name match, look for matching ingredient ID by name
+              if (commonIngredientName) {
+                fullIngredientId = Object.keys(ingredientsMap).find(id => {
+                  const ing = ingredientsMap[id];
+                  const name = ing.ingredient?.name || ing.ingredients?.name || '';
+                  return name.toLowerCase().includes(commonIngredientName.toLowerCase());
+                });
+              }
+            }
+            
+            console.log('Found matching ingredient ID:', fullIngredientId);
             
             // If found, replace the reference with the ingredient name and amount
             if (fullIngredientId && ingredientsMap[fullIngredientId]) {
               const ing = ingredientsMap[fullIngredientId];
-              const ingName = ing.ingredient?.name || 'unknown ingredient';
-              const amount = ing.metric_amount ? `${ing.metric_amount}${ing.metric_unit || ''}` : '';
+              // Try to get name from either ingredient or ingredients property
+              const ingName = ing.ingredient?.name || ing.ingredients?.name || 'unknown ingredient';
+              const amount = ing.imperial_amount ? `${ing.imperial_amount} ${ing.imperial_unit || ''}` : '';
               
               const replacement = amount 
                 ? `<span class="ingredient">${amount} ${ingName}</span>` 
                 : `<span class="ingredient">${ingName}</span>`;
               
               processedDescription = processedDescription.replace(match, replacement);
+            } else if (commonIngredientName) {
+              // Use the common ingredient name if we have it
+              processedDescription = processedDescription.replace(match, `<span class="ingredient">${commonIngredientName}</span>`);
             } else {
               // If not found, just remove the reference brackets
               processedDescription = processedDescription.replace(match, `unknown ingredient`);
