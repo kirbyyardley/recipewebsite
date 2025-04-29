@@ -43,13 +43,16 @@ export interface RecipeIngredient {
 
 // Interface for instruction step
 export interface InstructionStep {
-  step: number;
+  step_number: number;
   description: string;
-  ingredient_references?: string[];
-  processed_description?: string;
   timer?: number;     // Optional timer in seconds
   tip?: string;       // Optional cooking tip
-  optional?: boolean; // Whether the step is optional
+  ingredients?: {
+    name: string;
+    unit?: string | null;
+    amount?: number | null;
+    preparation?: string | null;
+  }[];
 }
 
 // Interface for structured instruction step
@@ -138,26 +141,37 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     // Process instructions to replace ingredient references
     let processedInstructions: InstructionStep[] = [];
     
-    // Check if we have structured instructions in the new format
-    if (recipe.structured_instructions && Array.isArray(recipe.structured_instructions)) {
+    // Check if we have instructions in the new format (nested under steps)
+    if (recipe.instructions?.steps && Array.isArray(recipe.instructions.steps)) {
+      console.log('Processing instructions from steps array');
+      processedInstructions = recipe.instructions.steps.map((step: InstructionStep) => ({
+        ...step,
+        description: processInstructionText(step.description, ingredientsBySlug, {
+          useImperial: true,
+          formatOptions: {
+            mixedNumber: true,
+            unicode: true
+          }
+        })
+      }));
+    }
+    // Check if we have structured instructions in the old format
+    else if (recipe.structured_instructions && Array.isArray(recipe.structured_instructions)) {
       console.log('Processing structured instructions');
       
       processedInstructions = recipe.structured_instructions.map((instruction: StructuredInstructionStep) => {
-        // Process the instruction text to replace ingredient references
-        const processedDescription = processInstructionText(
-          instruction.description, 
-          ingredientsBySlug,
-          { useImperial: true }
-        );
-        
         return {
-          step: instruction.step,
-          description: instruction.description,
-          processed_description: processedDescription,
-          // Add any additional properties
+          step_number: instruction.step,
+          description: processInstructionText(instruction.description, ingredientsBySlug, {
+            useImperial: true,
+            formatOptions: {
+              mixedNumber: true,
+              unicode: true
+            }
+          }),
           timer: instruction.timer,
           tip: instruction.tip,
-          optional: instruction.optional
+          ingredients: []
         };
       });
     }
@@ -167,75 +181,16 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
       
       processedInstructions = recipe.instructions.map((instruction: InstructionStep) => {
         if (!instruction.description) return instruction;
-
-        // Create a processed version of the description
-        let processedDescription = instruction.description;
-        
-        // Look for ingredient references in the format [ING:id_prefix]
-        const ingredientMatches = processedDescription.match(/\[ING:([a-z0-9]+)\]/g);
-        
-        if (ingredientMatches && ingredientMatches.length > 0) {
-          ingredientMatches.forEach((match: string) => {
-            // Extract the ID prefix
-            const idPrefix = match.substring(5, match.length - 1);
-            
-            // Try case-insensitive match or partial match if exact match fails
-            let fullIngredientId = Object.keys(ingredientsMap).find(id => 
-              id.toLowerCase().includes(idPrefix.toLowerCase())
-            );
-            
-            // If not found, try to match against common ingredients by name
-            let commonIngredientName = '';
-            if (!fullIngredientId) {
-              // Create fallback map for common ingredients
-              const commonIngredientsMap: Record<string, string> = {
-                '99614736': 'salt',
-                '798441ac': 'black pepper',
-                'eb95535e': 'all-purpose flour',
-                'd0b22b46': 'paprika',
-                '665694da': 'sweet potatoes',
-                '903f9542': 'chicken broth',
-                'c30340c0': 'Greek yogurt',
-                '907046e0': 'lemon juice'
-              };
-              
-              commonIngredientName = commonIngredientsMap[idPrefix] || '';
-              
-              // If we have a name match, look for matching ingredient ID by name
-              if (commonIngredientName) {
-                fullIngredientId = Object.keys(ingredientsMap).find(id => {
-                  const ing = ingredientsMap[id];
-                  const name = ing.ingredient?.name || ing.ingredients?.name || '';
-                  return name.toLowerCase().includes(commonIngredientName.toLowerCase());
-                });
-              }
-            }
-            
-            // If found, replace the reference with the ingredient name and amount
-            if (fullIngredientId && ingredientsMap[fullIngredientId]) {
-              const ing = ingredientsMap[fullIngredientId];
-              // Try to get name from either ingredient or ingredients property
-              const ingName = ing.ingredient?.name || ing.ingredients?.name || 'unknown ingredient';
-              const amount = ing.imperial_amount ? `${ing.imperial_amount} ${ing.imperial_unit || ''}` : '';
-              
-              const replacement = amount 
-                ? `<span class="ingredient">${amount} ${ingName}</span>` 
-                : `<span class="ingredient">${ingName}</span>`;
-              
-              processedDescription = processedDescription.replace(match, replacement);
-            } else if (commonIngredientName) {
-              // Use the common ingredient name if we have it
-              processedDescription = processedDescription.replace(match, `<span class="ingredient">${commonIngredientName}</span>`);
-            } else {
-              // If not found, just remove the reference brackets
-              processedDescription = processedDescription.replace(match, `unknown ingredient`);
-            }
-          });
-        }
-
         return {
           ...instruction,
-          processed_description: processedDescription
+          description: processInstructionText(instruction.description, ingredientsBySlug, {
+            useImperial: true,
+            formatOptions: {
+              mixedNumber: true,
+              unicode: true
+            }
+          }),
+          ingredients: []
         };
       });
     }

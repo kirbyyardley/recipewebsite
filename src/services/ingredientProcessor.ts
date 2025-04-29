@@ -1,4 +1,5 @@
 import { RecipeIngredient } from './recipes';
+import { generateIngredientHTML, FractionFormatOptions, formatFraction } from '@/lib/fractionUtils';
 
 /**
  * Creates a mapping of ingredient slugs to their full recipe ingredient data
@@ -21,51 +22,64 @@ export function createIngredientsSlugMap(ingredients: RecipeIngredient[]): Recor
   return slugMap;
 }
 
+interface ProcessInstructionOptions {
+  useImperial?: boolean;
+  formatOptions?: FractionFormatOptions;
+}
+
 /**
- * Process instruction text to replace {{ingredient:slug}} placeholders with
- * formatted HTML for displaying ingredients with measurements
+ * Process decimal numbers in text to use fraction formatting
+ */
+function processDecimalNumbers(text: string, formatOptions: FractionFormatOptions = {}): string {
+  // Match decimal numbers followed by units
+  // e.g., "2.5 cups", "0.75 teaspoon", "0.5 tablespoon"
+  const decimalPattern = /(\d+\.\d+)\s+(cup|cups|teaspoon|teaspoons|tablespoon|tablespoons|tsp|tbsp|g|gram|grams|ml|oz|ounce|ounces|pound|pounds|lb|lbs)/g;
+  
+  return text.replace(decimalPattern, (match, number, unit) => {
+    const formattedNumber = formatFraction(parseFloat(number), formatOptions);
+    return `${formattedNumber} ${unit}`;
+  });
+}
+
+/**
+ * Process instruction text to replace both ingredient references and decimal numbers
+ * with properly formatted measurements
  */
 export function processInstructionText(
   text: string, 
   ingredientsMap: Record<string, RecipeIngredient>,
-  options = { useImperial: true }
+  options: ProcessInstructionOptions = { useImperial: true }
 ): string {
-  // Look for ingredient references in the format {{ingredient:slug}}
+  const { useImperial = true, formatOptions = {} } = options;
+  
+  // First process ingredient references
+  let processedText = text;
   const ingredientMatches = text.match(/\{\{ingredient:([a-z0-9_-]+)\}\}/g);
   
-  if (!ingredientMatches) return text;
-  
-  let processedText = text;
-  
-  ingredientMatches.forEach(match => {
-    // Extract the slug (remove {{ingredient: and }})
-    const slug = match.substring(13, match.length - 2);
-    
-    // Find the ingredient by slug
-    const ingredient = ingredientsMap[slug];
-    
-    if (ingredient) {
-      // Get name and measurement info
-      const name = ingredient.ingredients?.name || '';
+  if (ingredientMatches) {
+    ingredientMatches.forEach(match => {
+      const slug = match.substring(13, match.length - 2);
+      const ingredient = ingredientsMap[slug];
       
-      // Use imperial or metric measurements based on options
-      const amount = options.useImperial
-        ? `${ingredient.imperial_amount} ${ingredient.imperial_unit || ''}`
-        : `${ingredient.metric_amount} ${ingredient.metric_unit || ''}`;
-      
-      // Create the replacement HTML
-      const replacement = amount.trim()
-        ? `<span class="ingredient">${amount.trim()} ${name}</span>`
-        : `<span class="ingredient">${name}</span>`;
-      
-      // Replace in the text
-      processedText = processedText.replace(match, replacement);
-    } else {
-      // Fallback to just showing the slug in a readable format
-      const readableSlug = slug.replace(/_/g, ' ');
-      processedText = processedText.replace(match, `<span class="ingredient">${readableSlug}</span>`);
-    }
-  });
+      if (ingredient) {
+        const name = ingredient.ingredients?.name || '';
+        const replacement = generateIngredientHTML(
+          ingredient.imperial_amount,
+          ingredient.imperial_unit || '',
+          ingredient.metric_amount,
+          ingredient.metric_unit || '',
+          name,
+          useImperial,
+          formatOptions
+        );
+        processedText = processedText.replace(match, replacement);
+      } else {
+        const readableSlug = slug.replace(/_/g, ' ');
+        processedText = processedText.replace(match, `<span class="ingredient">${readableSlug}</span>`);
+      }
+    });
+  }
   
-  return processedText;
+  // Then process any remaining decimal numbers
+  return processDecimalNumbers(processedText, formatOptions);
 } 

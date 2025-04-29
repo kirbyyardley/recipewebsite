@@ -12,6 +12,9 @@ interface CookModeButtonProps {
 }
 
 export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookModeButtonProps) {
+  // Debug logging
+  console.log('CookModeButton received instructions:', instructions);
+
   // State
   const [isOpen, setIsOpen] = useState(false);
   const [range, setRange] = useState({ start: 0, end: 0 });
@@ -149,81 +152,83 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
       
       <div className="cook-mode-expanded-content">
         <div className="space-y-6">
-          {instructions.map((instruction, index) => (
-            <div key={index} className="p-2 rounded-lg shadow-sm cook-mode-step-container">
-              <div className="flex items-start">
-                <div 
-                  className={`cook-mode-step-checkbox ${checkedSteps.includes(index) ? 'checked' : ''}`}
-                  onClick={() => toggleStep(index)}
-                  role="checkbox"
-                  aria-checked={checkedSteps.includes(index)}
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      toggleStep(index);
-                    }
-                  }}
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <div className="cook-mode-step-text">
-                  {instruction.processed_description ? (
+          {!instructions || !Array.isArray(instructions) ? (
+            <div>No instructions available</div>
+          ) : (
+            instructions.map((instruction, index) => {
+              console.log('Rendering instruction:', instruction);
+              return (
+                <div key={index} className="p-2 rounded-lg shadow-sm cook-mode-step-container">
+                  <div className="flex items-start">
                     <div 
-                      className={`text-white instruction-text ${checkedSteps.includes(index) ? 'completed' : ''}`}
-                      dangerouslySetInnerHTML={{ __html: instruction.processed_description }}
-                    />
-                  ) : (
-                    <p className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}>
-                      {instruction.description}
-                    </p>
-                  )}
-                  
-                  {/* Display timer if available */}
-                  {instruction.timer && (
-                    <div className="mt-2 flex items-center text-white/70">
+                      className={`cook-mode-step-checkbox ${checkedSteps.includes(index) ? 'checked' : ''}`}
+                      onClick={() => toggleStep(index)}
+                      role="checkbox"
+                      aria-checked={checkedSteps.includes(index)}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          toggleStep(index);
+                        }
+                      }}
+                    >
                       <svg 
                         xmlns="http://www.w3.org/2000/svg" 
-                        width="16" 
-                        height="16" 
+                        width="20" 
+                        height="20" 
                         viewBox="0 0 24 24" 
                         fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2" 
+                        stroke="currentColor"
+                        strokeWidth="2"
                         strokeLinecap="round" 
                         strokeLinejoin="round"
                       >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
+                        <polyline points="20 6 9 17 4 12"></polyline>
                       </svg>
-                      <span className="ml-1">
-                        {Math.floor(instruction.timer / 60)}:{(instruction.timer % 60).toString().padStart(2, '0')}
-                      </span>
                     </div>
-                  )}
-                  
-                  {/* Display tip if available */}
-                  {instruction.tip && (
-                    <div className="mt-2 p-2 bg-blue-500/10 rounded text-sm text-white/90">
-                      <strong>Tip:</strong> {instruction.tip}
+                    <div className="cook-mode-step-text">
+                      
+                      {/* Description */}
+                      <p className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}>
+                        {instruction.description}
+                      </p>
+                      
+                      {/* Timer if available */}
+                      {instruction.timer && (
+                        <div className="mt-2 flex items-center text-white/70">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="16" 
+                            height="16" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            strokeWidth="2" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                          </svg>
+                          <span className="ml-1">
+                            {Math.floor(instruction.timer / 60)}:{(instruction.timer % 60).toString().padStart(2, '0')}
+                          </span>
+                        </div>
+                      )}
+                      
+                      {/* Tip if available */}
+                      {instruction.tip && (
+                        <div className="mt-2 text-sm text-white/90">
+                          <em>{instruction.tip}</em>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       </div>
     </div>
