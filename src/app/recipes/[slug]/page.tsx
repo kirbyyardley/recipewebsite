@@ -93,27 +93,23 @@ export default async function RecipePage({ params }: Props) {
           {/* Ingredients Section */}
           <div className="mt-6">
             <h2 className="text-xl font-bold mb-4">Ingredients</h2>
-            <ul className="space-y-2">
+            <div className="space-y-3">
               {recipe.recipe_ingredients?.map((item) => (
-                <li key={item.id} className="grid grid-cols-[0.5fr_2fr_1fr] gap-4 items-center min-h-[40px]">
-                  <span className="font-bold text-right">
-                    <IngredientAmount
-                      imperialAmount={item.imperial_amount}
-                      imperialUnit={item.imperial_unit}
-                      metricAmount={item.metric_amount}
-                      metricUnit={item.metric_unit}
-                      className="whitespace-nowrap"
-                    />
-                  </span>
-                  <span className="font-medium">
-                    {item.ingredients?.name}
-                  </span>
-                  <span className="text-gray-500 text-sm">
-                    {item.notes}
-                  </span>
-                </li>
+                <div key={item.id} className="text-gray-800">
+                  <IngredientAmount
+                    imperialAmount={item.imperial_amount}
+                    imperialUnit={item.imperial_unit}
+                    metricAmount={item.metric_amount}
+                    metricUnit={item.metric_unit}
+                    className="font-medium"
+                  />
+                  <span className="ml-1 font-bold">{item.ingredients?.name}</span>
+                  {item.preparation && (
+                    <span className="ml-1 text-gray-500 text-sm">({item.preparation})</span>
+                  )}
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

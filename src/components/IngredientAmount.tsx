@@ -2,6 +2,15 @@ import React from 'react';
 import { useIngredientFormat, UseIngredientFormatOptions } from '@/hooks/useIngredientFormat';
 import { FractionFormatOptions } from '@/lib/fractionUtils';
 
+// Helper function to abbreviate units
+const abbreviateUnit = (unit: string): string => {
+  if (!unit) return '';
+  const lowerUnit = unit.toLowerCase();
+  if (lowerUnit === 'teaspoon' || lowerUnit === 'teaspoons') return 'tsp';
+  if (lowerUnit === 'tablespoon' || lowerUnit === 'tablespoons') return 'tbsp';
+  return unit; // Return original unit if no abbreviation needed
+};
+
 export interface IngredientAmountProps {
   imperialAmount: string;
   imperialUnit?: string;
@@ -35,10 +44,12 @@ export function IngredientAmount({
     metricUnit,
   );
 
+  const displayUnit = abbreviateUnit(unit);
+
   return (
     <span className={`ingredient-amount ${className}`.trim()}>
       {formattedAmount}
-      {unit && <span className="ingredient-unit"> {unit}</span>}
+      {displayUnit && <span className="ingredient-unit"> {displayUnit}</span>}
     </span>
   );
 }
@@ -60,10 +71,12 @@ export function SimpleIngredientAmount({
   const { formatAmount } = useIngredientFormat({ formatOptions });
   const { formattedAmount, unit: formattedUnit } = formatAmount(amount, unit);
 
+  const displayUnit = abbreviateUnit(formattedUnit);
+
   return (
     <span className={`ingredient-amount ${className}`.trim()}>
       {formattedAmount}
-      {formattedUnit && <span className="ingredient-unit"> {formattedUnit}</span>}
+      {displayUnit && <span className="ingredient-unit"> {displayUnit}</span>}
     </span>
   );
 } 

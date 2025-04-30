@@ -35,7 +35,7 @@ export interface RecipeIngredient {
   metric_unit: string;
   imperial_amount: string;
   imperial_unit: string;
-  notes: string | null;
+  preparation: string | null;
   optional: boolean;
   ingredient?: Ingredient; // Joined from ingredients table
   ingredients?: any; // From Supabase join

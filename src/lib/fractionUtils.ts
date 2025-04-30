@@ -139,7 +139,7 @@ export function generateIngredientHTML(
   options: FractionFormatOptions = {}
 ): string {
   const amount = useImperial ? imperialAmount : metricAmount;
-  const unit = useImperial ? imperialUnit : metricUnit;
+  let unit = useImperial ? imperialUnit : metricUnit;
   
   if (!amount.trim()) {
     return `<span class="ingredient">${name}</span>`;
@@ -147,6 +147,13 @@ export function generateIngredientHTML(
 
   const numericValue = parseAmount(amount);
   const formattedAmount = formatFraction(numericValue, options);
+
+  // Abbreviate units
+  if (unit) {
+    const lowerUnit = unit.toLowerCase();
+    if (lowerUnit === 'teaspoon' || lowerUnit === 'teaspoons') unit = 'tsp';
+    if (lowerUnit === 'tablespoon' || lowerUnit === 'tablespoons') unit = 'tbsp';
+  }
   
   return `<span class="ingredient">${formattedAmount}${unit ? ` ${unit}` : ''} ${name}</span>`;
 } 
