@@ -17,8 +17,8 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // Ensure we await the slug parameter
-  const slug = await Promise.resolve(params.slug);
+  // In Next.js 15, params is a Promise that needs to be awaited
+  const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
   
   if (!recipe) {
@@ -37,8 +37,8 @@ export async function generateMetadata(
 }
 
 export default async function RecipePage({ params }: Props) {
-  // Ensure we await the slug parameter
-  const slug = await Promise.resolve(params.slug);
+  // In Next.js 15, params is a Promise that needs to be awaited
+  const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
   
   if (!recipe) {

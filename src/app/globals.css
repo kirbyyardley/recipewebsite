@@ -1,3 +1,6 @@
+/* Silk Sheets CSS - Required for Silk components to work */
+@import "@silk-hq/components/layered-styles.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

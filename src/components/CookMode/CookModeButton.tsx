@@ -12,9 +12,6 @@ interface CookModeButtonProps {
 }
 
 export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookModeButtonProps) {
-  // Debug logging
-  console.log('CookModeButton received instructions:', instructions);
-
   // State
   const [isOpen, setIsOpen] = useState(false);
   const [range, setRange] = useState({ start: 0, end: 0 });
@@ -156,7 +153,6 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
             <div>No instructions available</div>
           ) : (
             instructions.map((instruction, index) => {
-              console.log('Rendering instruction:', instruction);
               return (
                 <div key={index} className="p-2 rounded-lg shadow-sm cook-mode-step-container">
                   <div className="flex items-start">
@@ -190,9 +186,10 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
                     <div className="cook-mode-step-text">
                       
                       {/* Description */}
-                      <p className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}>
-                        {instruction.description}
-                      </p>
+                      <p 
+                        className={`text-white ${checkedSteps.includes(index) ? 'completed' : ''}`}
+                        dangerouslySetInnerHTML={{ __html: instruction.description }}
+                      />
                       
                       {/* Tip if available */}
                       {instruction.tip && (
@@ -214,19 +211,18 @@ export function CookModeButton({ instructions, recipeTitle, imageUrl }: CookMode
   return (
     <Sheet.Root 
       license="commercial"
-      activeDetent={activeDetent}
-      onActiveDetentChange={setActiveDetent}
     >
-      {range.start === 0 && range.end === 0 && (
-        <Sheet.Trigger asChild>
-          <button 
-            className="cook-mode-fab"
-            aria-label="Start cooking"
-          >
-            <span className="cook-mode-fab-text">Start Cooking</span>
-          </button>
-        </Sheet.Trigger>
-      )}
+      <Sheet.Trigger 
+        asChild 
+        travelAnimation={{ scale: [1, 0.95] }}
+      >
+        <button 
+          className="cook-mode-fab"
+          aria-label="Start cooking"
+        >
+          <span className="cook-mode-fab-text">Start Cooking</span>
+        </button>
+      </Sheet.Trigger>
 
       <Sheet.Portal>
         <Sheet.View

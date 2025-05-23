@@ -143,7 +143,6 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     
     // Check if we have instructions in the new format (nested under steps)
     if (recipe.instructions?.steps && Array.isArray(recipe.instructions.steps)) {
-      console.log('Processing instructions from steps array');
       processedInstructions = recipe.instructions.steps.map((step: InstructionStep) => ({
         ...step,
         description: processInstructionText(step.description, ingredientsBySlug, {
@@ -157,8 +156,6 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     }
     // Check if we have structured instructions in the old format
     else if (recipe.structured_instructions && Array.isArray(recipe.structured_instructions)) {
-      console.log('Processing structured instructions');
-      
       processedInstructions = recipe.structured_instructions.map((instruction: StructuredInstructionStep) => {
         return {
           step_number: instruction.step,
@@ -177,8 +174,6 @@ export async function getRecipeBySlug(slug: string): Promise<RecipeWithIngredien
     }
     // Fall back to legacy format if needed
     else if (recipe.instructions && Array.isArray(recipe.instructions)) {
-      console.log('Falling back to legacy instruction format');
-      
       processedInstructions = recipe.instructions.map((instruction: InstructionStep) => {
         if (!instruction.description) return instruction;
         return {
