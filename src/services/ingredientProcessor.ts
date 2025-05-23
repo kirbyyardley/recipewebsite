@@ -12,10 +12,40 @@ export function createIngredientsSlugMap(ingredients: RecipeIngredient[]): Recor
     if (item.ingredients) {
       const ingredient = item.ingredients;
       const name = ingredient.name;
-      // Generate a slug if not available
-      const slug = ingredient.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
       
-      slugMap[slug] = item;
+      // Generate multiple slug variations for each ingredient
+      const primarySlug = ingredient.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+      const hyphenSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const underscoreSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+      
+      // Store under all possible slug variations
+      slugMap[primarySlug] = item;
+      slugMap[hyphenSlug] = item;
+      slugMap[underscoreSlug] = item;
+      
+      // Add specific mappings for common variations
+      if (name.toLowerCase().includes('egg')) {
+        slugMap['egg'] = item;
+        slugMap['eggs'] = item;
+      }
+      
+      if (name.toLowerCase().includes('vanilla')) {
+        slugMap['vanilla'] = item;
+      }
+      
+      // For compound words, also store without the compound part
+      const words = name.toLowerCase().split(/[\s-]+/);
+      if (words.length > 1) {
+        // For "large eggs", also map "egg"
+        // For "vanilla extract", also map "vanilla"
+        // For "all-purpose flour", also map "flour"
+        words.forEach((word: string) => {
+          if (word.length > 2) { // Only map meaningful words
+            slugMap[word] = item;
+            slugMap[word.replace(/s$/, '')] = item; // singular form
+          }
+        });
+      }
     }
   });
   

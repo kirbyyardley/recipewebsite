@@ -130,9 +130,9 @@ export function isValidAmount(value: string): boolean {
  * Generates an HTML string for an ingredient amount with proper fraction formatting
  */
 export function generateIngredientHTML(
-  imperialAmount: string,
+  imperialAmount: string | number,
   imperialUnit: string,
-  metricAmount: string,
+  metricAmount: string | number,
   metricUnit: string,
   name: string,
   useImperial: boolean = true,
@@ -141,7 +141,9 @@ export function generateIngredientHTML(
   const amount = useImperial ? imperialAmount : metricAmount;
   let unit = useImperial ? imperialUnit : metricUnit;
   
-  if (!amount.trim()) {
+  // Convert amount to string and handle empty values
+  const amountStr = String(amount || '').trim();
+  if (!amountStr) {
     return `<span class="ingredient">${name}</span>`;
   }
 
